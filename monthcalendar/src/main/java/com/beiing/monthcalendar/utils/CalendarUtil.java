@@ -16,4 +16,8 @@ public class CalendarUtil {
     public static boolean isToday(DateTime t){
         return isSameDay(t, new DateTime());
     }
+
+    public static boolean isThisMonth(DateTime current, DateTime t2){
+        return (current.getYear() == t2.getYear()) && (current.getMonthOfYear() == t2.getMonthOfYear());
+    }
 }

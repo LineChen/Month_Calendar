@@ -12,6 +12,7 @@ import com.beiing.monthcalendar.listener.DateSelectListener;
 import com.beiing.monthcalendar.listener.GetViewHelper;
 
 import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 
 import jackwharton_salvage.RecyclingPagerAdapter;
 
@@ -26,17 +27,21 @@ public class CalendarPagerAdapter extends RecyclingPagerAdapter {
     private Context context;
     private int maxCount;
     private int centerPosition;
-    /**开始显示周的第一天：默认显示今天所在的那一周**/
-    private DateTime startDateTime;
+    private int calendarHeight;
+
+    private int startYear;
+    private int startMonth;
     /**日期选择:默认是今天**/
     private DateTime selectDateTime;
     private GetViewHelper getViewHelper;
     private DateSelectListener dateSelectListener;
 
-    public CalendarPagerAdapter(Context context, int maxCount, DateTime startDateTime, GetViewHelper getViewHelper) {
+    public CalendarPagerAdapter(Context context, int calendarHeight, int maxCount, int startYear, int startMonth, GetViewHelper getViewHelper) {
         this.context = context;
+        this.calendarHeight = calendarHeight;
         this.maxCount = maxCount;
-        this.startDateTime = startDateTime;
+        this.startYear = startYear;
+        this.startMonth = startMonth;
         this.getViewHelper = getViewHelper;
         centerPosition = maxCount / 2;
         selectDateTime = new DateTime();
@@ -52,14 +57,14 @@ public class CalendarPagerAdapter extends RecyclingPagerAdapter {
         } else {
             viewHolder = (WeekViewHolder) convertView.getTag();
         }
-        int intervalWeeks = position - centerPosition;
-        DateTime start = startDateTime.plusWeeks(intervalWeeks);
-        final DayAdapter dayAdapter = new DayAdapter(start, getViewHelper, selectDateTime);
+        int interval = position - centerPosition;
+        DateTime start = new DateTime(startYear, startMonth, 1, 0, 0, DateTimeZone.UTC).plusMonths(interval);
+        final DayAdapter dayAdapter = new DayAdapter(calendarHeight, start, getViewHelper, selectDateTime);
         viewHolder.weekGrid.setAdapter(dayAdapter);
         viewHolder.weekGrid.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                selectDateTime = dayAdapter.getItem(position);
+                selectDateTime = dayAdapter.getItem(position).getDateTime();
                 dayAdapter.setSelectDateTime(selectDateTime);
                 notifyDataSetChanged();
                 if(dateSelectListener != null){
@@ -96,12 +101,12 @@ public class CalendarPagerAdapter extends RecyclingPagerAdapter {
         this.dateSelectListener = dateSelectListener;
     }
 
-    public DateTime getStartDateTime() {
-        return startDateTime;
-    }
-
-    public void setStartDateTime(DateTime startDateTime) {
-        this.startDateTime = startDateTime;
-        notifyDataSetChanged();
-    }
+//    public DateTime getStartDateTime() {
+//        return startDateTime;
+//    }
+//
+//    public void setStartDateTime(DateTime startDateTime) {
+//        this.startDateTime = startDateTime;
+//        notifyDataSetChanged();
+//    }
 }

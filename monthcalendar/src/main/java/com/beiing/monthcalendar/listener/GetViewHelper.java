@@ -3,7 +3,7 @@ package com.beiing.monthcalendar.listener;
 import android.view.View;
 import android.view.ViewGroup;
 
-import org.joda.time.DateTime;
+import com.beiing.monthcalendar.bean.Day;
 
 /**
  * Created by linechen on 2017/5/19.<br/>
@@ -13,7 +13,7 @@ import org.joda.time.DateTime;
 
 public interface GetViewHelper {
 
-    View getDayView(int position, View convertView, ViewGroup parent, DateTime dateTime, boolean select);
+    View getDayView(int position, View convertView, ViewGroup parent, Day day);
 
     View getWeekView(int position, View convertView, ViewGroup parent, String week);
 

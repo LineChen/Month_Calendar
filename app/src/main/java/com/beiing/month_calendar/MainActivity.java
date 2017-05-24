@@ -10,6 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.beiing.monthcalendar.MonthCalendar;
+import com.beiing.monthcalendar.bean.Day;
 import com.beiing.monthcalendar.listener.GetViewHelper;
 import com.beiing.monthcalendar.utils.CalendarUtil;
 
@@ -32,12 +33,14 @@ public class MainActivity extends AppCompatActivity {
         monthCalendar = (MonthCalendar) findViewById(R.id.month_calendar);
         monthCalendar.setGetViewHelper(new GetViewHelper() {
             @Override
-            public View getDayView(int position, View convertView, ViewGroup parent, DateTime dateTime, boolean select) {
+            public View getDayView(int position, View convertView, ViewGroup parent, Day day) {
                 if(convertView == null){
                     convertView = LayoutInflater.from(MainActivity.this).inflate(R.layout.item_day, parent, false);
                 }
                 TextView tvDay = (TextView) convertView.findViewById(R.id.tv_day);
+                DateTime dateTime = day.getDateTime();
                 tvDay.setText(dateTime.toString("d"));
+                boolean select = day.isSelect();
                 if(CalendarUtil.isToday(dateTime) && select){
                     tvDay.setTextColor(Color.WHITE);
                     tvDay.setBackgroundResource(R.drawable.circular_blue);
@@ -48,8 +51,12 @@ public class MainActivity extends AppCompatActivity {
                     tvDay.setTextColor(Color.WHITE);
                     tvDay.setBackgroundResource(R.drawable.circular_blue);
                 } else {
-                    tvDay.setTextColor(Color.BLACK);
                     tvDay.setBackgroundColor(Color.TRANSPARENT);
+                    if(day.isOtherMonth()){
+                        tvDay.setTextColor(Color.LTGRAY);
+                    } else {
+                        tvDay.setTextColor(Color.BLACK);
+                    }
                 }
 
                 ImageView ivPoint = (ImageView) convertView.findViewById(R.id.iv_point);

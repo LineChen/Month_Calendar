@@ -25,13 +25,17 @@ import org.joda.time.DateTime;
 
 public class MonthCalendar extends LinearLayout{
 
+    private static final String TAG = "MonthCalendar";
+
     public static final int DAYS_OF_WEEK = 7;
+    public static final int DAYS_OF_PAGE = 42;
 
     private int maxCount = 1000;
     private int centerPosition = maxCount / 2;
 
     private int headerHeight;
     private int headerBgColor;
+    private int calendarHeight;
 
 
     private WrapContentViewPager viewPagerContent;
@@ -56,6 +60,7 @@ public class MonthCalendar extends LinearLayout{
         try {
             headerHeight = (int) ta.getDimension(R.styleable.MonthCalendar_mc_headerHeight, getResources().getDimension(R.dimen.calender_header_height));
             headerBgColor = ta.getColor(R.styleable.MonthCalendar_mc_headerBgColor, Color.WHITE);
+            calendarHeight = (int) ta.getDimension(R.styleable.MonthCalendar_mc_calendarHeight, getResources().getDimension(R.dimen.calender_content_height));
         } finally {
             ta.recycle();
         }
@@ -78,11 +83,13 @@ public class MonthCalendar extends LinearLayout{
 
     private void addMonthView() {
         View calendar = LayoutInflater.from(getContext()).inflate(R.layout.layout_calendar_content, this, false);
+        calendar.setLayoutParams(new LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, calendarHeight));
         viewPagerContent = (WrapContentViewPager) calendar.findViewById(R.id.viewpager_calendar);
         addView(calendar);
-        DateTime startDay = new DateTime();
-        startDay = startDay.minusDays(startDay.getDayOfWeek());
-        calendarPagerAdapter = new CalendarPagerAdapter(getContext(), maxCount, startDay, getViewHelper);
+        DateTime startDay = new DateTime(2017, 1, 24, 0, 0);
+        startDay = startDay.minusDays(startDay.getDayOfMonth()- 1);
+        startDay = startDay.minusDays(startDay.getDayOfWeek() % DAYS_OF_WEEK);
+        calendarPagerAdapter = new CalendarPagerAdapter(getContext(), calendarHeight, maxCount, startDay.getYear(), startDay.getMonthOfYear(), getViewHelper);
         viewPagerContent.setAdapter(calendarPagerAdapter);
         viewPagerContent.setCurrentItem(centerPosition);
     }

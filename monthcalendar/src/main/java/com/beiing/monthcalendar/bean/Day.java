@@ -14,6 +14,17 @@ public class Day {
     private boolean select;
     private boolean otherMonth;
 
+    public Day() {
+    }
+
+    public Day(DateTime dateTime) {
+        this.dateTime = dateTime;
+    }
+
+    public Day(DateTime dateTime, boolean otherMonth) {
+        this.dateTime = dateTime;
+        this.otherMonth = otherMonth;
+    }
 
     public DateTime getDateTime() {
         return dateTime;

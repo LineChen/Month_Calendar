@@ -3,6 +3,7 @@
     <declare-styleable name="MonthCalendar">
         <attr name="mc_headerHeight" format="dimension"/>
         <attr name="mc_headerBgColor" format="color"/>
+        <attr name="mc_calendarHeight" format="dimension"/>
     </declare-styleable>
 
 </resources>
