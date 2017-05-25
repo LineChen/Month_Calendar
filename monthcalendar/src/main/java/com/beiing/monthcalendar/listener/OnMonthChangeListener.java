@@ -6,6 +6,6 @@ package com.beiing.monthcalendar.listener;
  * </br>
  */
 
-public interface MonthChangeListener {
-    void onMonthChanged();
+public interface OnMonthChangeListener {
+    void onMonthChanged(int currentYear, int currentMonth);
 }

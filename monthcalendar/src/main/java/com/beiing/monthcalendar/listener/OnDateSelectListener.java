@@ -8,6 +8,6 @@ import org.joda.time.DateTime;
  * </br>
  */
 
-public interface DateSelectListener {
+public interface OnDateSelectListener {
     void onDateSelect(DateTime selectDate);
 }

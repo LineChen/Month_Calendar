@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.support.annotation.Nullable;
+import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,8 +13,11 @@ import android.widget.LinearLayout;
 
 import com.beiing.monthcalendar.adapter.CalendarPagerAdapter;
 import com.beiing.monthcalendar.adapter.WeekAdapter;
+import com.beiing.monthcalendar.listener.CustomPagerChandeListender;
 import com.beiing.monthcalendar.listener.GetViewHelper;
-import com.beiing.monthcalendar.widget.WrapContentViewPager;
+import com.beiing.monthcalendar.listener.OnDateSelectListener;
+import com.beiing.monthcalendar.listener.OnMonthChangeListener;
+import com.beiing.monthcalendar.listener.OnOtherMonthSelectListener;
 
 import org.joda.time.DateTime;
 
@@ -28,19 +32,21 @@ public class MonthCalendar extends LinearLayout{
     private static final String TAG = "MonthCalendar";
 
     public static final int DAYS_OF_WEEK = 7;
-    public static final int DAYS_OF_PAGE = 42;
 
-    private int maxCount = 1000;
-    private int centerPosition = maxCount / 2;
+    public static final int MAX_COUNT = 1000;
+    public static final int CENTER_POSITION = MAX_COUNT / 2;
 
     private int headerHeight;
     private int headerBgColor;
     private int calendarHeight;
 
 
-    private WrapContentViewPager viewPagerContent;
+    private ViewPager viewPagerContent;
     private GetViewHelper getViewHelper;
     private CalendarPagerAdapter calendarPagerAdapter;
+
+    private OnDateSelectListener onDateSelectListener;
+    private OnMonthChangeListener onMonthChangeListener;
 
     public MonthCalendar(Context context) {
         this(context, null);
@@ -66,10 +72,16 @@ public class MonthCalendar extends LinearLayout{
         }
     }
 
+    public void setGetViewHelper(GetViewHelper getViewHelper) {
+        this.getViewHelper = getViewHelper;
+        initView();
+    }
+
     private void initView() {
         setOrientation(VERTICAL);
         addHeaderView();
         addMonthView();
+        initListener();
     }
 
     private void addHeaderView() {
@@ -84,20 +96,111 @@ public class MonthCalendar extends LinearLayout{
     private void addMonthView() {
         View calendar = LayoutInflater.from(getContext()).inflate(R.layout.layout_calendar_content, this, false);
         calendar.setLayoutParams(new LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, calendarHeight));
-        viewPagerContent = (WrapContentViewPager) calendar.findViewById(R.id.viewpager_calendar);
+        viewPagerContent = (ViewPager) calendar.findViewById(R.id.viewpager_calendar);
         addView(calendar);
-        DateTime startDay = new DateTime(2017, 1, 24, 0, 0);
-        startDay = startDay.minusDays(startDay.getDayOfMonth()- 1);
-        startDay = startDay.minusDays(startDay.getDayOfWeek() % DAYS_OF_WEEK);
-        calendarPagerAdapter = new CalendarPagerAdapter(getContext(), calendarHeight, maxCount, startDay.getYear(), startDay.getMonthOfYear(), getViewHelper);
+        DateTime startDay = new DateTime();
+        calendarPagerAdapter = new CalendarPagerAdapter(getContext(), calendarHeight, startDay.getYear(), startDay.getMonthOfYear(), getViewHelper);
         viewPagerContent.setAdapter(calendarPagerAdapter);
-        viewPagerContent.setCurrentItem(centerPosition);
+        viewPagerContent.setCurrentItem(CENTER_POSITION);
     }
 
-    public void setGetViewHelper(GetViewHelper getViewHelper) {
-        this.getViewHelper = getViewHelper;
-        initView();
+
+    private void initListener() {
+        viewPagerContent.addOnPageChangeListener(new CustomPagerChandeListender() {
+            @Override
+            public void onPageSelected(int position) {
+                onMonthChange(position);
+            }
+        });
+
+        calendarPagerAdapter.setOnOtherMonthSelectListener(new OnOtherMonthSelectListener() {
+            @Override
+            public void onPreMonthSelect() {
+                viewPagerContent.setCurrentItem(viewPagerContent.getCurrentItem() - 1, true);
+            }
+
+            @Override
+            public void onNextMonthSelect() {
+                viewPagerContent.setCurrentItem(viewPagerContent.getCurrentItem() + 1, true);
+            }
+        });
+
     }
 
+    private void onMonthChange(int position) {
+        int intervalMonth = position - CENTER_POSITION;
+        DateTime newDate = new DateTime(new DateTime(calendarPagerAdapter.getStartYear(),
+                calendarPagerAdapter.getStartMonth(), 1, 0, 0).plusMonths(intervalMonth));
+        if (onMonthChangeListener != null) {
+            onMonthChangeListener.onMonthChanged(newDate.getYear(), newDate.getMonthOfYear());
+        }
+    }
+
+    public void setOnDateSelectListener(OnDateSelectListener onDateSelectListener) {
+        this.onDateSelectListener = onDateSelectListener;
+        calendarPagerAdapter.setOnDateSelectListener(onDateSelectListener);
+    }
+
+    public void setOnMonthChangeListener(OnMonthChangeListener onMonthChangeListener) {
+        this.onMonthChangeListener = onMonthChangeListener;
+    }
+
+
+    /**
+     * 设置选中日期
+     * @param dateTime
+     */
+    public void setSelectDateTime(DateTime dateTime){
+        calendarPagerAdapter.setSelectDateTime(dateTime);
+        gotoDate(dateTime.getYear(), dateTime.getMonthOfYear());
+    }
+
+    /**
+     * 获取选中日期
+     * @return 选中日期
+     */
+    public DateTime getSelectDateTime() {
+        return calendarPagerAdapter.getSelectDateTime();
+    }
+
+    /**
+     * 跳转到指定日期
+     * @param year 指定年
+     * @param month 指定月
+     */
+    public void gotoDate(int year, int month){
+        viewPagerContent.setCurrentItem(CENTER_POSITION, true);
+        calendarPagerAdapter.setStartDateTime(year, month);
+        onMonthChange(CENTER_POSITION);
+    }
+
+    /**
+     * 获取当前显示年份
+     * @return current year
+     */
+    public int getCurrentYear(){
+        int intervalMonth = viewPagerContent.getCurrentItem() - CENTER_POSITION;
+        DateTime dateTime = new DateTime(calendarPagerAdapter.getStartYear(), calendarPagerAdapter.getStartMonth(), 1, 0, 0)
+                .plusMonths(intervalMonth);
+        return dateTime.getYear();
+    }
+
+    /**
+     * 获取当前显示月份
+     * @return current month
+     */
+    public int getCurrentMonth(){
+        int intervalMonth = viewPagerContent.getCurrentItem() - CENTER_POSITION;
+        DateTime dateTime = new DateTime(calendarPagerAdapter.getStartYear(), calendarPagerAdapter.getStartMonth(), 1, 0, 0)
+                .plusMonths(intervalMonth);
+        return dateTime.getMonthOfYear();
+    }
+
+    /**
+     * 刷新界面
+     */
+    public void refresh(){
+        calendarPagerAdapter.notifyDataSetChanged();
+    }
 
 }

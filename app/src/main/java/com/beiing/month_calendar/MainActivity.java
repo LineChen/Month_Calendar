@@ -12,6 +12,8 @@ import android.widget.TextView;
 import com.beiing.monthcalendar.MonthCalendar;
 import com.beiing.monthcalendar.bean.Day;
 import com.beiing.monthcalendar.listener.GetViewHelper;
+import com.beiing.monthcalendar.listener.OnDateSelectListener;
+import com.beiing.monthcalendar.listener.OnMonthChangeListener;
 import com.beiing.monthcalendar.utils.CalendarUtil;
 
 import org.joda.time.DateTime;
@@ -23,11 +25,19 @@ public class MainActivity extends AppCompatActivity {
 
     private MonthCalendar monthCalendar;
     private List<DateTime> eventDates;
+    private TextView tvMonthChange;
+    private TextView tvCurrentYearMonth;
+    private TextView tvSelectDate;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        tvMonthChange = (TextView) findViewById(R.id.tv_month_change);
+        tvCurrentYearMonth = (TextView) findViewById(R.id.tv_current_year_month);
+        tvSelectDate = (TextView) findViewById(R.id.tv_select_date);
+        tvMonthChange.setText(new DateTime().toString("yyyy年M月"));
+
         eventDates = new ArrayList<>();
 
         monthCalendar = (MonthCalendar) findViewById(R.id.month_calendar);
@@ -60,7 +70,7 @@ public class MainActivity extends AppCompatActivity {
                 }
 
                 ImageView ivPoint = (ImageView) convertView.findViewById(R.id.iv_point);
-                ivPoint.setVisibility(View.GONE);
+                ivPoint.setVisibility(View.INVISIBLE);
                 for (DateTime d : eventDates) {
                     if(CalendarUtil.isSameDay(d, dateTime)){
                         ivPoint.setVisibility(View.VISIBLE);
@@ -83,5 +93,43 @@ public class MainActivity extends AppCompatActivity {
                 return convertView;
             }
         });
+
+        monthCalendar.setOnMonthChangeListener(new OnMonthChangeListener() {
+            @Override
+            public void onMonthChanged(int currentYear, int currentMonth) {
+                tvMonthChange.setText(currentYear + "年" + currentMonth + "月");
+            }
+        });
+
+        monthCalendar.setOnDateSelectListener(new OnDateSelectListener() {
+            @Override
+            public void onDateSelect(DateTime selectDate) {
+                tvSelectDate.setText("你选择的日期：" + selectDate.toString("yyyy-MM-dd"));
+            }
+        });
+    }
+
+    int plus = 0;
+    public void addEvent(View view) {
+        eventDates.add(new DateTime().plusDays(plus ++));
+        monthCalendar.refresh();
+    }
+
+    public void gotoDate(View view) {
+        DateTime dateTime = new DateTime().plusMonths((int) (Math.random() * 10));
+        monthCalendar.gotoDate(dateTime.getYear(),dateTime.getMonthOfYear());
+    }
+
+    public void setSelectDate(View view) {
+        monthCalendar.setSelectDateTime(new DateTime().plusDays((int) (Math.random() * 20)));
+    }
+
+    public void gotoToday(View view) {
+        DateTime dateTime = new DateTime();
+        monthCalendar.gotoDate(dateTime.getYear(), dateTime.getMonthOfYear());
+    }
+
+    public void getCurrentYearMonth(View view) {
+        tvCurrentYearMonth.setText("当前是" + monthCalendar.getCurrentYear() + "年" + monthCalendar.getCurrentMonth() + "月");
     }
 }
