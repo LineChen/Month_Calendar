@@ -2,7 +2,7 @@
 
 一个按月显示的日历，布局完全自定义。
 
-![capture](https://github.com/LineChen/Week_Calendar/blob/master/month_calendar.gif)
+![capture](https://github.com/LineChen/Month_Calendar/blob/master/month_calendar.gif)
 
 ## 使用
 
