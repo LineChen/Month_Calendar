@@ -86,10 +86,32 @@ public class MainActivity extends AppCompatActivity {
                     convertView = LayoutInflater.from(MainActivity.this).inflate(R.layout.item_week, parent, false);
                 }
                 TextView tvWeek = (TextView) convertView.findViewById(R.id.tv_week);
-                tvWeek.setText(week);
-                if(position == 0 || position == 6){
-                    tvWeek.setTextColor(getResources().getColor(R.color.colorAccent));
+                switch (position){
+                    case 0:
+                        week = "日";
+                        tvWeek.setTextColor(getResources().getColor(R.color.colorAccent));
+                        break;
+                    case 1:
+                        week = "一";
+                        break;
+                    case 2:
+                        week = "二";
+                        break;
+                    case 3:
+                        week = "三";
+                        break;
+                    case 4:
+                        week = "四";
+                        break;
+                    case 5:
+                        week = "五";
+                        break;
+                    case 6:
+                        week = "六";
+                        tvWeek.setTextColor(getResources().getColor(R.color.colorAccent));
+                        break;
                 }
+                tvWeek.setText(week);
                 return convertView;
             }
         });
