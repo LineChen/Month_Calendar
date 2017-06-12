@@ -39,6 +39,7 @@ public class MonthCalendar extends LinearLayout{
     private int headerHeight;
     private int headerBgColor;
     private int calendarHeight;
+    private boolean showWeek;
 
 
     private ViewPager viewPagerContent;
@@ -67,6 +68,7 @@ public class MonthCalendar extends LinearLayout{
             headerHeight = (int) ta.getDimension(R.styleable.MonthCalendar_mc_headerHeight, getResources().getDimension(R.dimen.calender_header_height));
             headerBgColor = ta.getColor(R.styleable.MonthCalendar_mc_headerBgColor, Color.WHITE);
             calendarHeight = (int) ta.getDimension(R.styleable.MonthCalendar_mc_calendarHeight, getResources().getDimension(R.dimen.calender_content_height));
+            showWeek = ta.getBoolean(R.styleable.MonthCalendar_mc_show_week, true);
         } finally {
             ta.recycle();
         }
@@ -91,6 +93,7 @@ public class MonthCalendar extends LinearLayout{
         GridView weekGrid = (GridView) header.findViewById(R.id.grid_week);
         addView(header);
         weekGrid.setAdapter(new WeekAdapter(getViewHelper));
+        header.setVisibility(showWeek ? VISIBLE : GONE);
     }
 
     private void addMonthView() {

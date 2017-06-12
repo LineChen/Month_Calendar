@@ -4,6 +4,7 @@
         <attr name="mc_headerHeight" format="dimension"/>
         <attr name="mc_headerBgColor" format="color"/>
         <attr name="mc_calendarHeight" format="dimension"/>
+        <attr name="mc_show_week" format="boolean"/>
     </declare-styleable>
 
 </resources>
