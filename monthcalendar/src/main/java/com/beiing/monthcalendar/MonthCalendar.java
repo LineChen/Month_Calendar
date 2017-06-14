@@ -119,12 +119,22 @@ public class MonthCalendar extends LinearLayout{
         calendarPagerAdapter.setOnOtherMonthSelectListener(new OnOtherMonthSelectListener() {
             @Override
             public void onPreMonthSelect() {
-                viewPagerContent.setCurrentItem(viewPagerContent.getCurrentItem() - 1, true);
+                viewPagerContent.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        viewPagerContent.setCurrentItem(viewPagerContent.getCurrentItem() - 1, true);
+                    }
+                }, 100);
             }
 
             @Override
             public void onNextMonthSelect() {
-                viewPagerContent.setCurrentItem(viewPagerContent.getCurrentItem() + 1, true);
+                viewPagerContent.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        viewPagerContent.setCurrentItem(viewPagerContent.getCurrentItem() + 1, true);
+                    }
+                }, 100);
             }
         });
 
