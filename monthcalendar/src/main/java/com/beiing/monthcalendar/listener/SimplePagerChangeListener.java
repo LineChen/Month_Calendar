@@ -8,7 +8,7 @@ import android.support.v4.view.ViewPager;
  * </br>
  */
 
-public class CustomPagerChandeListender implements ViewPager.OnPageChangeListener {
+public class SimplePagerChangeListener implements ViewPager.OnPageChangeListener {
     @Override
     public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
 

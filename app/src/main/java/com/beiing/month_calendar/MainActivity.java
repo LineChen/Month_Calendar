@@ -11,7 +11,7 @@ import android.widget.TextView;
 
 import com.beiing.monthcalendar.MonthCalendar;
 import com.beiing.monthcalendar.bean.Day;
-import com.beiing.monthcalendar.listener.GetViewHelper;
+import com.beiing.monthcalendar.adapter.ViewAdapter;
 import com.beiing.monthcalendar.listener.OnDateSelectListener;
 import com.beiing.monthcalendar.listener.OnMonthChangeListener;
 import com.beiing.monthcalendar.utils.CalendarUtil;
@@ -41,7 +41,7 @@ public class MainActivity extends AppCompatActivity {
         eventDates = new ArrayList<>();
 
         monthCalendar = (MonthCalendar) findViewById(R.id.month_calendar);
-        monthCalendar.setGetViewHelper(new GetViewHelper() {
+        monthCalendar.setViewAdapter(new ViewAdapter() {
             @Override
             public View getDayView(int position, View convertView, ViewGroup parent, Day day) {
                 if(convertView == null){

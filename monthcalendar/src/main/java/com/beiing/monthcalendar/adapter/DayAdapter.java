@@ -5,7 +5,6 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 
 import com.beiing.monthcalendar.bean.Day;
-import com.beiing.monthcalendar.listener.GetViewHelper;
 import com.beiing.monthcalendar.utils.CalendarUtil;
 
 import org.joda.time.DateTime;
@@ -25,12 +24,12 @@ import static com.beiing.monthcalendar.MonthCalendar.DAYS_OF_WEEK;
 public class DayAdapter extends BaseAdapter {
     private int calendarHeight;
     private List<Day> dateTimes;
-    private GetViewHelper getViewHelper;
+    private ViewAdapter viewAdapter;
     private DateTime selectDateTime;
 
-    public DayAdapter(int calendarHeight, DateTime startDateTime, GetViewHelper getViewHelper, DateTime selectDateTime) {
+    public DayAdapter(int calendarHeight, DateTime startDateTime, ViewAdapter viewAdapter, DateTime selectDateTime) {
         this.calendarHeight = calendarHeight;
-        this.getViewHelper = getViewHelper;
+        this.viewAdapter = viewAdapter;
         this.selectDateTime = selectDateTime;
         dateTimes = new ArrayList<>();
 
@@ -71,7 +70,7 @@ public class DayAdapter extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
         Day day = dateTimes.get(position);
         day.setSelect(CalendarUtil.isSameDay(day.getDateTime(), selectDateTime));
-        View view = getViewHelper.getDayView(position, convertView, parent, day);
+        View view = viewAdapter.getDayView(position, convertView, parent, day);
         ViewGroup.LayoutParams params = view.getLayoutParams();
         params.height = calendarHeight / (dateTimes.size() / DAYS_OF_WEEK);
         return view;

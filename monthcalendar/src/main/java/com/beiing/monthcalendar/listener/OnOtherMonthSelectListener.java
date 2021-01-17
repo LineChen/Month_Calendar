@@ -8,5 +8,6 @@ package com.beiing.monthcalendar.listener;
 
 public interface OnOtherMonthSelectListener {
     void onPreMonthSelect();
+
     void onNextMonthSelect();
 }

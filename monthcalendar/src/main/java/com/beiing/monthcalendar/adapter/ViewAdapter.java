@@ -1,4 +1,4 @@
-package com.beiing.monthcalendar.listener;
+package com.beiing.monthcalendar.adapter;
 
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,7 +11,7 @@ import com.beiing.monthcalendar.bean.Day;
  * </br>
  */
 
-public interface GetViewHelper {
+public interface ViewAdapter {
 
     View getDayView(int position, View convertView, ViewGroup parent, Day day);
 

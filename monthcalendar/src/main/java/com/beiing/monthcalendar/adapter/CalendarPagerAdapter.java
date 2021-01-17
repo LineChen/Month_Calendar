@@ -9,7 +9,6 @@ import android.widget.GridView;
 
 import com.beiing.monthcalendar.R;
 import com.beiing.monthcalendar.bean.Day;
-import com.beiing.monthcalendar.listener.GetViewHelper;
 import com.beiing.monthcalendar.listener.OnDateSelectListener;
 import com.beiing.monthcalendar.listener.OnOtherMonthSelectListener;
 
@@ -38,16 +37,16 @@ public class CalendarPagerAdapter extends RecyclingPagerAdapter {
     private int startMonth;
     /**日期选择:默认是今天**/
     private DateTime selectDateTime;
-    private GetViewHelper getViewHelper;
+    private ViewAdapter viewAdapter;
     private OnDateSelectListener onDateSelectListener;
     private OnOtherMonthSelectListener onOtherMonthSelectListener;
 
-    public CalendarPagerAdapter(Context context, int calendarHeight, int startYear, int startMonth, GetViewHelper getViewHelper) {
+    public CalendarPagerAdapter(Context context, int calendarHeight, int startYear, int startMonth, ViewAdapter viewAdapter) {
         this.context = context;
         this.calendarHeight = calendarHeight;
         this.startYear = startYear;
         this.startMonth = startMonth;
-        this.getViewHelper = getViewHelper;
+        this.viewAdapter = viewAdapter;
         selectDateTime = new DateTime();
     }
 
@@ -63,7 +62,7 @@ public class CalendarPagerAdapter extends RecyclingPagerAdapter {
         }
         int interval = position - CENTER_POSITION;
         final DateTime start = new DateTime(startYear, startMonth, 1, 0, 0, DateTimeZone.UTC).plusMonths(interval);
-        final DayAdapter dayAdapter = new DayAdapter(calendarHeight, start, getViewHelper, selectDateTime);
+        final DayAdapter dayAdapter = new DayAdapter(calendarHeight, start, viewAdapter, selectDateTime);
         viewHolder.weekGrid.setAdapter(dayAdapter);
         viewHolder.weekGrid.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override

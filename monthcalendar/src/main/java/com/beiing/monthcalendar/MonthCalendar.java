@@ -13,8 +13,8 @@ import android.widget.LinearLayout;
 
 import com.beiing.monthcalendar.adapter.CalendarPagerAdapter;
 import com.beiing.monthcalendar.adapter.WeekAdapter;
-import com.beiing.monthcalendar.listener.CustomPagerChandeListender;
-import com.beiing.monthcalendar.listener.GetViewHelper;
+import com.beiing.monthcalendar.listener.SimplePagerChangeListener;
+import com.beiing.monthcalendar.adapter.ViewAdapter;
 import com.beiing.monthcalendar.listener.OnDateSelectListener;
 import com.beiing.monthcalendar.listener.OnMonthChangeListener;
 import com.beiing.monthcalendar.listener.OnOtherMonthSelectListener;
@@ -43,7 +43,7 @@ public class MonthCalendar extends LinearLayout{
 
 
     private ViewPager viewPagerContent;
-    private GetViewHelper getViewHelper;
+    private ViewAdapter viewAdapter;
     private CalendarPagerAdapter calendarPagerAdapter;
 
     private OnDateSelectListener onDateSelectListener;
@@ -74,8 +74,8 @@ public class MonthCalendar extends LinearLayout{
         }
     }
 
-    public void setGetViewHelper(GetViewHelper getViewHelper) {
-        this.getViewHelper = getViewHelper;
+    public void setViewAdapter(ViewAdapter viewAdapter) {
+        this.viewAdapter = viewAdapter;
         initView();
     }
 
@@ -92,7 +92,7 @@ public class MonthCalendar extends LinearLayout{
         header.setBackgroundColor(headerBgColor);
         GridView weekGrid = (GridView) header.findViewById(R.id.grid_week);
         addView(header);
-        weekGrid.setAdapter(new WeekAdapter(getViewHelper));
+        weekGrid.setAdapter(new WeekAdapter(viewAdapter));
         header.setVisibility(showWeek ? VISIBLE : GONE);
     }
 
@@ -102,14 +102,14 @@ public class MonthCalendar extends LinearLayout{
         viewPagerContent = (ViewPager) calendar.findViewById(R.id.viewpager_calendar);
         addView(calendar);
         DateTime startDay = new DateTime();
-        calendarPagerAdapter = new CalendarPagerAdapter(getContext(), calendarHeight, startDay.getYear(), startDay.getMonthOfYear(), getViewHelper);
+        calendarPagerAdapter = new CalendarPagerAdapter(getContext(), calendarHeight, startDay.getYear(), startDay.getMonthOfYear(), viewAdapter);
         viewPagerContent.setAdapter(calendarPagerAdapter);
         viewPagerContent.setCurrentItem(CENTER_POSITION);
     }
 
 
     private void initListener() {
-        viewPagerContent.addOnPageChangeListener(new CustomPagerChandeListender() {
+        viewPagerContent.addOnPageChangeListener(new SimplePagerChangeListener() {
             @Override
             public void onPageSelected(int position) {
                 onMonthChange(position);
