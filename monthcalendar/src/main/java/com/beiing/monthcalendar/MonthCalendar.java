@@ -27,7 +27,7 @@ import org.joda.time.DateTime;
  * </br>
  */
 
-public class MonthCalendar extends LinearLayout{
+public class MonthCalendar extends LinearLayout {
 
     private static final String TAG = "MonthCalendar";
 
@@ -87,7 +87,7 @@ public class MonthCalendar extends LinearLayout{
     }
 
     private void addHeaderView() {
-        View header =  LayoutInflater.from(getContext()).inflate(R.layout.layout_calender_header, this, false);
+        View header = LayoutInflater.from(getContext()).inflate(R.layout.layout_calender_header, this, false);
         header.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, headerHeight));
         header.setBackgroundColor(headerBgColor);
         GridView weekGrid = (GridView) header.findViewById(R.id.grid_week);
@@ -138,6 +138,14 @@ public class MonthCalendar extends LinearLayout{
             }
         });
 
+        calendarPagerAdapter.setOnDateSelectListener(new OnDateSelectListener() {
+            @Override
+            public void onDateSelect(DateTime selectDate) {
+                if (onDateSelectListener != null) {
+                    onDateSelectListener.onDateSelect(selectDate);
+                }
+            }
+        });
     }
 
     private void onMonthChange(int position) {
@@ -151,7 +159,6 @@ public class MonthCalendar extends LinearLayout{
 
     public void setOnDateSelectListener(OnDateSelectListener onDateSelectListener) {
         this.onDateSelectListener = onDateSelectListener;
-        calendarPagerAdapter.setOnDateSelectListener(onDateSelectListener);
     }
 
     public void setOnMonthChangeListener(OnMonthChangeListener onMonthChangeListener) {
@@ -161,15 +168,17 @@ public class MonthCalendar extends LinearLayout{
 
     /**
      * 设置选中日期
+     *
      * @param dateTime
      */
-    public void setSelectDateTime(DateTime dateTime){
+    public void setSelectDateTime(DateTime dateTime) {
         calendarPagerAdapter.setSelectDateTime(dateTime);
         gotoDate(dateTime.getYear(), dateTime.getMonthOfYear());
     }
 
     /**
      * 获取选中日期
+     *
      * @return 选中日期
      */
     public DateTime getSelectDateTime() {
@@ -178,10 +187,11 @@ public class MonthCalendar extends LinearLayout{
 
     /**
      * 跳转到指定日期
-     * @param year 指定年
+     *
+     * @param year  指定年
      * @param month 指定月
      */
-    public void gotoDate(int year, int month){
+    public void gotoDate(int year, int month) {
         viewPagerContent.setCurrentItem(CENTER_POSITION, true);
         calendarPagerAdapter.setStartDateTime(year, month);
         onMonthChange(CENTER_POSITION);
@@ -189,9 +199,10 @@ public class MonthCalendar extends LinearLayout{
 
     /**
      * 获取当前显示年份
+     *
      * @return current year
      */
-    public int getCurrentYear(){
+    public int getCurrentYear() {
         int intervalMonth = viewPagerContent.getCurrentItem() - CENTER_POSITION;
         DateTime dateTime = new DateTime(calendarPagerAdapter.getStartYear(), calendarPagerAdapter.getStartMonth(), 1, 0, 0)
                 .plusMonths(intervalMonth);
@@ -200,9 +211,10 @@ public class MonthCalendar extends LinearLayout{
 
     /**
      * 获取当前显示月份
+     *
      * @return current month
      */
-    public int getCurrentMonth(){
+    public int getCurrentMonth() {
         int intervalMonth = viewPagerContent.getCurrentItem() - CENTER_POSITION;
         DateTime dateTime = new DateTime(calendarPagerAdapter.getStartYear(), calendarPagerAdapter.getStartMonth(), 1, 0, 0)
                 .plusMonths(intervalMonth);
@@ -212,7 +224,7 @@ public class MonthCalendar extends LinearLayout{
     /**
      * 刷新界面
      */
-    public void refresh(){
+    public void refresh() {
         calendarPagerAdapter.notifyDataSetChanged();
     }
 
